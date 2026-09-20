@@ -79,6 +79,13 @@ func recoverPanics(logger *logging.Logger, renderer *templates.Renderer) middlew
 	}
 }
 
+func contentTypeOptions(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
+		responseWriter.Header().Set("X-Content-Type-Options", "nosniff")
+		next.ServeHTTP(responseWriter, request)
+	})
+}
+
 func LoadShedder(_ int, _ int) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return next
