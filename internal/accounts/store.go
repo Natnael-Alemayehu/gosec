@@ -190,7 +190,7 @@ func (store *Store) CurrentSession(ctx context.Context, token string) (CurrentSe
 		return CurrentSession{}, false, fmt.Errorf("find session: %w", err)
 	}
 	expiresAt, err := time.Parse(time.RFC3339, row.ExpiresAt)
-	if err != nil || !store.now().Before(expiresAt) {
+	if err != nil || row.RevokedAt != nil || !store.now().Before(expiresAt) {
 		return CurrentSession{}, false, nil
 	}
 	user, found, err := store.FindUserByID(ctx, row.UserID)

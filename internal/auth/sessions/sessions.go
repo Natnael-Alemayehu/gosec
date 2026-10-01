@@ -51,17 +51,24 @@ func HasRecentAuthentication(current accounts.CurrentSession, now time.Time) boo
 
 func SetCookie(responseWriter http.ResponseWriter, session accounts.Session) {
 	http.SetCookie(responseWriter, &http.Cookie{
-		Name:  CookieName,
-		Value: session.Token,
-		Path:  "/",
+		Name:     CookieName,
+		Value:    session.Token,
+		Path:     "/",
+		Expires:  session.ExpiresAt,
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
 	})
 }
 
 func ClearCookie(responseWriter http.ResponseWriter) {
 	http.SetCookie(responseWriter, &http.Cookie{
-		Name:    CookieName,
-		Path:    "/",
-		Expires: time.Unix(0, 0),
-		MaxAge:  -1,
+		Name:     CookieName,
+		Path:     "/",
+		Expires:  time.Unix(0, 0),
+		MaxAge:   -1,
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
 	})
 }
